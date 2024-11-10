@@ -3,7 +3,7 @@ from tkinter import ttk
 import requests
 
 # Base URL of the server
-SERVER_URL = "http://174.115.245.34:2400"  # Replace <host_ip> with the server's IP address
+SERVER_URL = "http://10.0.0.23:2400"  # Replace <host_ip> with the server's IP address
 
 def fetch_residents():
     response = requests.get(f"{SERVER_URL}/getResidents")
