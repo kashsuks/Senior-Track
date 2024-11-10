@@ -1,29 +1,49 @@
-# /host_files/host_gui.py
 import tkinter as tk
 from tkinter import messagebox
 import requests
+from flask import Flask, jsonify, request
+from threading import Thread
+import pandas as pd
+import os
+import sys
 
-SERVER_IP = "127.0.0.1"  # For local testing on the same machine, replace with host's IP if necessary
-SERVER_PORT = 2400
-SERVER_URL = f"http://{SERVER_IP}:{SERVER_PORT}"
+if getattr(sys, 'frozen', False):
+    application_path = sys._MEIPASS
+else:
+    application_path = os.getcwd()
 
-class HostApp:
+app = Flask(__name__)
+csv_file_path = os.path.join(application_path, 'residents.csv')
+residents_data = pd.read_csv(csv_file_path)
+
+@app.route("/getResidents", methods=["GET"])
+def get_residents():
+    data = residents_data.to_dict(orient="records")
+    return jsonify(data)
+
+@app.route("/searchResident", methods=["GET"])
+def search_resident():
+    name = request.args.get("name", "").lower()
+    filtered_data = residents_data[residents_data["Name"].str.lower().str.contains(name)]
+    return jsonify(filtered_data.to_dict(orient="records"))
+
+def run_server():
+    app.run(host="0.0.0.0", port=2400, use_reloader=False)
+
+class ClientApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("Host Senior Track System")
+        self.root.title("Client Senior Track System")
         self.root.geometry("500x400")
 
-        # Initialize frames
         self.login_frame = tk.Frame(root)
         self.home_frame = tk.Frame(root)
         self.residents_frame = tk.Frame(root)
 
-        # Build each frame
         self.build_login_frame()
         self.build_home_frame()
         self.build_residents_frame()
 
-        # Start with login frame
         self.show_frame(self.login_frame)
 
     def show_frame(self, frame):
@@ -84,7 +104,7 @@ class HostApp:
             return
 
         try:
-            response = requests.get(f"{SERVER_URL}/searchResident", params={"name": query})
+            response = requests.get(f"http://127.0.0.1:2400/searchResident", params={"name": query})
             if response.status_code == 200:
                 suggestions = response.json()
                 self.update_suggestion_list(suggestions)
@@ -95,10 +115,21 @@ class HostApp:
 
     def update_suggestion_list(self, suggestions):
         self.suggestion_listbox.delete(0, tk.END)
-        for name in suggestions:
-            self.suggestion_listbox.insert(tk.END, name)
+        for resident in suggestions:
+            self.suggestion_listbox.insert(tk.END, resident["Name"])
+
+    def display_resident_data(self, event):
+        selected_index = self.suggestion_listbox.curselection()
+        if not selected_index:
+            return
+        selected_resident = self.suggestion_listbox.get(selected_index)
+        messagebox.showinfo("Resident Data", f"Selected Resident: {selected_resident}")
 
 if __name__ == "__main__":
+    server_thread = Thread(target=run_server)
+    server_thread.daemon = True
+    server_thread.start()
+
     root = tk.Tk()
-    app = HostApp(root)
+    app = ClientApp(root)
     root.mainloop()

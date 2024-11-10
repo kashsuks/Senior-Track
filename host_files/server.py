@@ -1,4 +1,3 @@
-# /host_files/server.py
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import pandas as pd
@@ -8,7 +7,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Load CSV data
-residents_data = pd.read_csv(os.path.join(os.getcwd(), 'host_files', 'residents.csv'))
+residents_data = pd.read_csv(os.path.join(os.getcwd(), 'residents.csv'))
 
 @app.route("/getResidents", methods=["GET"])
 def get_residents():
@@ -22,4 +21,4 @@ def search_resident():
     return jsonify(filtered_data.to_dict(orient="records"))
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=2400)
+    app.run(host="0.0.0.0", port=2400, use_reloader=False)
