@@ -1,8 +1,0 @@
-date,mealType,residentName,hadMeal
-2024-11-01,breakfast,John Doe,Yes
-2024-11-01,lunch,John Doe,No
-2024-11-01,dinner,John Doe,Yes
-2024-11-01,breakfast,Jane Smith,Yes
-2024-11-01,lunch,Jane Smith,Yes
-2024-11-01,dinner,Jane Smith,No
-2025-12-26,lunch,John Doe, No
