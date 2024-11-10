@@ -14,7 +14,7 @@ def createMainWindow():
     root = tk.Tk()
     root.title("Retirement Home Data Logger")
     root.geometry("800x600")
-    svttk.Style().theme_use("sun-valley")
+    svttk.set_theme("dark")
 
     loginFrame = tk.Frame(root)
     loginFrame.pack(pady=100)
