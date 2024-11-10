@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from sunvalley import ttk as svttk
+from sv_ttk import ttk as svttk
 import pandas as pd
 
 residentData = pd.read_csv("residents.csv")
