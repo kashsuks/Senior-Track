@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import ttk
-import sv_ttk  # Import only the module for theming
 import pandas as pd
 
 residentData = pd.read_csv("residents.csv")
@@ -15,21 +14,18 @@ def createMainWindow():
     root.title("Retirement Home Data Logger")
     root.geometry("800x600")
 
-    # Set the theme using sv_ttk (applies to all ttk widgets)
-    sv_ttk.set_theme("dark")  # Correct way to set the theme
-
     loginFrame = tk.Frame(root)
     loginFrame.pack(pady=100)
 
-    # Use ttk widgets (Label, Entry, Button)
-    usernameLabel = ttk.Label(loginFrame, text="Username")
+    # Standard Tkinter widgets (Label, Entry, Button)
+    usernameLabel = tk.Label(loginFrame, text="Username")
     usernameLabel.grid(row=0, column=0, padx=10, pady=5)
-    usernameEntry = ttk.Entry(loginFrame)
+    usernameEntry = tk.Entry(loginFrame)
     usernameEntry.grid(row=0, column=1, padx=10, pady=5)
 
-    passwordLabel = ttk.Label(loginFrame, text="Password")
+    passwordLabel = tk.Label(loginFrame, text="Password")
     passwordLabel.grid(row=1, column=0, padx=10, pady=5)
-    passwordEntry = ttk.Entry(loginFrame, show="*")
+    passwordEntry = tk.Entry(loginFrame, show="*")
     passwordEntry.grid(row=1, column=1, padx=10, pady=5)
 
     def loginAction():
@@ -39,10 +35,10 @@ def createMainWindow():
         else:
             errorLabel.config(text="Invalid username or password", foreground="red")
     
-    loginButton = ttk.Button(loginFrame, text="Login", command=loginAction)
+    loginButton = tk.Button(loginFrame, text="Login", command=loginAction)
     loginButton.grid(row=2, column=0, columnspan=2, pady=10)
 
-    errorLabel = ttk.Label(loginFrame, text="")
+    errorLabel = tk.Label(loginFrame, text="")
     errorLabel.grid(row=3, column=0, columnspan=2)
 
     root.mainloop()
@@ -54,23 +50,23 @@ def createDashboard(root):
     leftFrame = tk.Frame(dashboardFrame, width=200, bg="lightgray")
     leftFrame.pack(side="left", fill="y")
 
-    residentsButton = ttk.Button(leftFrame, text="Residents", command=lambda: showResidents(dashboardFrame))
+    residentsButton = tk.Button(leftFrame, text="Residents", command=lambda: showResidents(dashboardFrame))
     residentsButton.pack(fill="x", pady=10)
 
-    mealsButton = ttk.Button(leftFrame, text="Meals", command=mealPlaceholder)
+    mealsButton = tk.Button(leftFrame, text="Meals", command=mealPlaceholder)
     mealsButton.pack(fill="x", pady=10)
 
-    welcomeLabel = ttk.Label(dashboardFrame, text="Welcome to the Retirement Home Data Logger", font=("Arial", 16))
+    welcomeLabel = tk.Label(dashboardFrame, text="Welcome to the Retirement Home Data Logger", font=("Arial", 16))
     welcomeLabel.pack(pady=20)
 
 def showResidents(dashboardFrame):
     for widget in dashboardFrame.winfo_children():
         widget.destroy()
 
-    searchLabel = ttk.Label(dashboardFrame, text="Search Resident by Name", font=("Arial", 14))
+    searchLabel = tk.Label(dashboardFrame, text="Search Resident by Name", font=("Arial", 14))
     searchLabel.pack(pady=10)
 
-    searchEntry = ttk.Entry(dashboardFrame, width=40)
+    searchEntry = tk.Entry(dashboardFrame, width=40)
     searchEntry.pack(pady=10)
 
     suggestionsListbox = tk.Listbox(dashboardFrame, width=40, height=5)
@@ -97,21 +93,20 @@ def showResidentInfo(dashboardFrame, residentInfo):
     infoFrame = tk.Frame(dashboardFrame)
     infoFrame.pack(pady=20)
 
-    nameLabel = ttk.Label(infoFrame, text=f"Name: {residentInfo['Name']}", font=("Arial", 12))
+    nameLabel = tk.Label(infoFrame, text=f"Name: {residentInfo['Name']}", font=("Arial", 12))
     nameLabel.pack(anchor="w")
 
-    ageLabel = ttk.Label(infoFrame, text=f"Age: {residentInfo['Age']}", font=("Arial", 12))
+    ageLabel = tk.Label(infoFrame, text=f"Age: {residentInfo['Age']}", font=("Arial", 12))
     ageLabel.pack(anchor="w")
 
-    dobLabel = ttk.Label(infoFrame, text=f"DOB: {residentInfo['DOB']}", font=("Arial", 12))
+    dobLabel = tk.Label(infoFrame, text=f"DOB: {residentInfo['DOB']}", font=("Arial", 12))
     dobLabel.pack(anchor="w")
 
-    dietaryLabel = ttk.Label(infoFrame, text=f"Dietary Restrictions: {residentInfo['Dietary Restrictions']}", font=("Arial", 12))
+    dietaryLabel = tk.Label(infoFrame, text=f"Dietary Restrictions: {residentInfo['Dietary Restrictions']}", font=("Arial", 12))
     dietaryLabel.pack(anchor="w")
 
-    contactLabel = ttk.Label(infoFrame, text=f"Contact Info: {residentInfo['Contact Info']}", font=("Arial", 12))
+    contactLabel = tk.Label(infoFrame, text=f"Contact Info: {residentInfo['Contact Info']}", font=("Arial", 12))
     contactLabel.pack(anchor="w")
-
 
 def mealPlaceholder():
     print("Calling Meal API...")
