@@ -1,13 +1,34 @@
+# client.py
 import tkinter as tk
 from tkinter import messagebox
-from tkinter.ttk import Entry, Button
 import requests
+import subprocess
+import time
+import psutil
+import os
 
-SERVER_URL = "http://10.0.0.23:2400"
+SERVER_PORT = 2400
+SERVER_SCRIPT = "server.py"
 
 # Dummy Credentials
 USERNAME = "admin"
 PASSWORD = "123456"
+
+def check_server_and_run():
+    """Check if the server is running, and start it if necessary."""
+    server_running = False
+    for proc in psutil.process_iter(attrs=["pid", "cmdline"]):
+        if "python" in proc.info["cmdline"] and SERVER_SCRIPT in proc.info["cmdline"]:
+            server_running = True
+            break
+
+    if not server_running:
+        # Start the server as a background process
+        print(f"Starting server: {SERVER_SCRIPT}")
+        subprocess.Popen(["python", SERVER_SCRIPT])
+
+    # Give the server a few seconds to start
+    time.sleep(3)
 
 class App:
     def __init__(self, root):
@@ -97,10 +118,10 @@ class App:
             return
 
         try:
-            response = requests.get(f"{SERVER_URL}/searchResident", params={"name": query})
+            response = requests.get(f"http://localhost:2400/searchResident", params={"name": query})
             if response.status_code == 200:
                 suggestions = response.json()
-                self.update_suggestion_list([resident["Name"] for resident in suggestions])
+                self.update_suggestion_list(suggestions)
             else:
                 print(f"Error: {response.status_code}, {response.text}")
                 messagebox.showerror("Error", "Failed to fetch residents")
@@ -119,19 +140,18 @@ class App:
             return
 
         name = self.suggestion_listbox.get(selected_index[0])
-        try:
-            response = requests.get(f"{SERVER_URL}/getResidentData", params={"name": name})
-            if response.status_code == 200:
-                resident_data = response.json()
-                formatted_data = "\n".join([f"{key}: {value}" for key, value in resident_data.items()])
-                self.data_label.config(text=formatted_data)
-            else:
-                messagebox.showerror("Error", "Failed to fetch resident data")
-        except requests.exceptions.RequestException as e:
-            print(f"Request failed: {e}")
+        response = requests.get(f"http://localhost:2400/getResidentData", params={"name": name})
+
+        if response.status_code == 200:
+            resident_data = response.json()
+            formatted_data = "\n".join([f"{key}: {value}" for key, value in resident_data.items()])
+            self.data_label.config(text=formatted_data)
+        else:
             messagebox.showerror("Error", "Failed to fetch resident data")
 
 if __name__ == "__main__":
+    check_server_and_run()
+
     root = tk.Tk()
     app = App(root)
     root.mainloop()

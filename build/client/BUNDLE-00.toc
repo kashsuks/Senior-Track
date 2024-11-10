@@ -1,0 +1,1 @@
+([('client', '/Users/ksukshavasi/Senior-Track/dist/client', 'EXECUTABLE')],)
