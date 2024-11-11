@@ -4,6 +4,8 @@ import requests
 from threading import Thread
 
 # Flask server will be running separately, no need to handle CSV or file paths here
+# pyinstaller --onefile --windowed --hidden-import=requests --hidden-import=pandas --add-data "residents.csv;." client.py
+
 
 class ClientApp:
     def __init__(self, root):
