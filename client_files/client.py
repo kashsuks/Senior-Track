@@ -1,12 +1,9 @@
-# /client_files/client.py
 import tkinter as tk
 from tkinter import messagebox
 import requests
+from threading import Thread
 
-# Define the server URL for the host
-SERVER_IP = "127.0.0.1"  # Replace with the IP address of the host computer if needed
-SERVER_PORT = 2400
-SERVER_URL = f"http://{SERVER_IP}:{SERVER_PORT}"
+# Flask server will be running separately, no need to handle CSV or file paths here
 
 class ClientApp:
     def __init__(self, root):
@@ -14,17 +11,14 @@ class ClientApp:
         self.root.title("Client Senior Track System")
         self.root.geometry("500x400")
 
-        # Initialize frames
         self.login_frame = tk.Frame(root)
         self.home_frame = tk.Frame(root)
         self.residents_frame = tk.Frame(root)
 
-        # Build each frame
         self.build_login_frame()
         self.build_home_frame()
         self.build_residents_frame()
 
-        # Start with login frame
         self.show_frame(self.login_frame)
 
     def show_frame(self, frame):
@@ -85,7 +79,8 @@ class ClientApp:
             return
 
         try:
-            response = requests.get(f"{SERVER_URL}/searchResident", params={"name": query})
+            # Make API call to search for residents
+            response = requests.get(f"http://127.0.0.1:2400/searchResident", params={"name": query})
             if response.status_code == 200:
                 suggestions = response.json()
                 self.update_suggestion_list(suggestions)
