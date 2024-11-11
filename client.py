@@ -95,12 +95,17 @@ class App:
         query = self.search_entry.get()
         if len(query) < 1:
             return
-        
-        response = requests.get(f"{SERVER_URL}/searchResidents", params={"query": query})
-        if response.status_code == 200:
-            suggestions = response.json()
-            self.update_suggestion_list(suggestions)
-        else:
+
+        try:
+            response = requests.get(f"{SERVER_URL}/searchResident", params={"name": query})
+            if response.status_code == 200:
+                suggestions = response.json()
+                self.update_suggestion_list([resident["Name"] for resident in suggestions])
+            else:
+                print(f"Error: {response.status_code}, {response.text}")
+                messagebox.showerror("Error", "Failed to fetch residents")
+        except requests.exceptions.RequestException as e:
+            print(f"Request failed: {e}")
             messagebox.showerror("Error", "Failed to fetch residents")
 
     def update_suggestion_list(self, suggestions):
@@ -114,15 +119,17 @@ class App:
             return
 
         name = self.suggestion_listbox.get(selected_index[0])
-        response = requests.get(f"{SERVER_URL}/getResidentData", params={"name": name})
-
-        if response.status_code == 200:
-            resident_data = response.json()
-            formatted_data = "\n".join([f"{key}: {value}" for key, value in resident_data.items()])
-            self.data_label.config(text=formatted_data)
-        else:
+        try:
+            response = requests.get(f"{SERVER_URL}/getResidentData", params={"name": name})
+            if response.status_code == 200:
+                resident_data = response.json()
+                formatted_data = "\n".join([f"{key}: {value}" for key, value in resident_data.items()])
+                self.data_label.config(text=formatted_data)
+            else:
+                messagebox.showerror("Error", "Failed to fetch resident data")
+        except requests.exceptions.RequestException as e:
+            print(f"Request failed: {e}")
             messagebox.showerror("Error", "Failed to fetch resident data")
-
 
 if __name__ == "__main__":
     root = tk.Tk()

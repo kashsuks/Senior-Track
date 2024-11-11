@@ -19,5 +19,14 @@ def search_resident():
     filtered_data = residents_data[residents_data["Name"].str.lower().str.contains(name)]
     return jsonify(filtered_data.to_dict(orient="records"))
 
+@app.route("/getResidentData", methods=["GET"])
+def get_resident_data():
+    name = request.args.get("name", "").lower()
+    resident = residents_data[residents_data["Name"].str.lower() == name]
+    if not resident.empty:
+        return jsonify(resident.iloc[0].to_dict())
+    else:
+        return jsonify({"error": "Resident not found"}), 404
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=2400)  # Set host and port for LAN access
