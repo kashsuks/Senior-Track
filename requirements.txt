@@ -1,6 +1,0 @@
-flask==3.0.3
-requests==2.32.3
-pandas==2.2.3
-flask-cors==5.0.0
-pyqt6==6.5.2
-pyqtdarktheme==2.1.0
