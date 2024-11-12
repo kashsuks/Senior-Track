@@ -1,12 +1,9 @@
-#Client File
 import tkinter as tk
 from tkinter import messagebox
-from tkinter.ttk import Entry, Button
 import requests
 
 SERVER_URL = "http://10.0.0.23:2400"
 
-# Dummy Credentials
 USERNAME = "admin"
 PASSWORD = "123456"
 
@@ -16,17 +13,14 @@ class App:
         self.root.title("Senior Track System")
         self.root.geometry("500x400")
 
-        # Initialize frames
         self.login_frame = tk.Frame(root)
         self.home_frame = tk.Frame(root)
         self.residents_frame = tk.Frame(root)
 
-        # Build each frame
         self.build_login_frame()
         self.build_home_frame()
         self.build_residents_frame()
 
-        # Start with login frame
         self.show_frame(self.login_frame)
 
     def show_frame(self, frame):
@@ -49,7 +43,6 @@ class App:
     def check_login(self):
         username = self.username_entry.get()
         password = self.password_entry.get()
-
         if username == USERNAME and password == PASSWORD:
             self.show_frame(self.home_frame)
         else:
@@ -57,23 +50,18 @@ class App:
 
     def build_home_frame(self):
         self.home_frame.place(relwidth=1, relheight=1)
-
-        home_label = tk.Label(self.home_frame, text="Home Page", font=("Helvetica", 18))
-        home_label.pack(pady=20)
+        tk.Label(self.home_frame, text="Home Page", font=("Helvetica", 18)).pack(pady=20)
 
         residents_button = tk.Button(self.home_frame, text="Residents", command=lambda: self.show_frame(self.residents_frame))
         residents_button.pack(pady=10)
 
-        meals_button = tk.Button(self.home_frame, text="Meals")
-        meals_button.pack(pady=10)
-
+        tk.Button(self.home_frame, text="Meals").pack(pady=10)
         self.add_home_button(self.home_frame)
 
     def build_residents_frame(self):
         self.residents_frame.place(relwidth=1, relheight=1)
 
-        search_label = tk.Label(self.residents_frame, text="Search Resident")
-        search_label.pack(pady=10)
+        tk.Label(self.residents_frame, text="Search Resident").pack(pady=10)
 
         self.search_entry = tk.Entry(self.residents_frame)
         self.search_entry.pack()
@@ -96,7 +84,6 @@ class App:
         query = self.search_entry.get()
         if len(query) < 1:
             return
-
         try:
             response = requests.get(f"{SERVER_URL}/searchResident", params={"name": query})
             if response.status_code == 200:
@@ -118,7 +105,6 @@ class App:
         selected_index = self.suggestion_listbox.curselection()
         if not selected_index:
             return
-
         name = self.suggestion_listbox.get(selected_index[0])
         try:
             response = requests.get(f"{SERVER_URL}/getResidentData", params={"name": name})

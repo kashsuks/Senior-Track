@@ -5,7 +5,6 @@ import pandas as pd
 app = Flask(__name__)
 CORS(app)
 
-# Load CSV data
 residents_data = pd.read_csv("residents.csv")
 
 @app.route("/getResidents", methods=["GET"])
@@ -29,4 +28,4 @@ def get_resident_data():
         return jsonify({"error": "Resident not found"}), 404
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=2400)  # Set host and port for LAN access
+    app.run(host="0.0.0.0", port=2400)
